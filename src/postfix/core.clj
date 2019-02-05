@@ -40,15 +40,16 @@
 (defn evaluator-regexp
   "Evaluates a postfix notation expression using a regular expression"
   [expression]
-  (cond 
-    (= (count expression) 1) expression
-    (= (count (string/split expression #"\s+")) 3) (evaluate-postfix-expression expression)
-    (> (count expression) 3)
-    (let [expression (remove-extra-whitespace expression) regexp #"(?:\d+\s*){2}[\+\-\\\*]" match (re-find regexp expression)]
-      (do
-        (println "exp" expression)
-        (println "match" match)
-        (evaluator-regexp (string/replace expression regexp (str (evaluate-postfix-expression match))))))))
+  (let [exp-count (count (string/split expression #"\s+"))]
+     (cond
+       (= exp-count 1) expression
+       (= exp-count 3) (evaluate-postfix-expression expression)
+       (> exp-count 3)
+       (let [expression (remove-extra-whitespace expression) regexp #"(?:\d+\s*){2}[\+\-\\\*]" match (re-find regexp expression)]
+         (do
+           (println "exp" expression)
+           (println "match" match)
+           (evaluator-regexp (string/replace-first expression regexp (str (evaluate-postfix-expression match)))))))))
 
 
 (defn evaluator-stack
